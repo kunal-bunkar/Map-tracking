@@ -11,9 +11,13 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join( __dirname , 'public')));
 
 io.on('connection', (socket) => {
+  socket.on('send-location', (coords) => {
+    console.log('Location received:', coords);
+    io.emit('new-location',{ id :socket.id,...coords});
+  });
   console.log('A user connected');
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    io.emit('user-disconnected', socket.id);
   }); 
 });
 app.get('/', (req, res) => {
